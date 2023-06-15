@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+    id Int @id @default(autoincrement())
+    idFirebase Int
+    desafios Desafio[]
+    genero String
+    dataNascimento DateTime
+    pesoInicial Decimal
+    altura Int 
+}
+
+model Desafio {
+  id Int @id @default(autoincrement())
+  dataInicio DateTime
+  dataFinal DateTime
+  titulo String
+  descricao String
+  meta Decimal
+  pesagens Pesagem[]
+  idUsuario Int
+  usuario Usuario @relation(fields: [idUsuario], references: [id])
+}
+
+model Pesagem {
+  id Int @id @default(autoincrement())
+  dataPesagem DateTime @default(now())
+  peso Decimal
+  idDesafio Int
+  desafio Desafio @relation(fields: [idDesafio], references: [id])
+}
