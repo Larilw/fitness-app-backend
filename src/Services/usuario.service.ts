@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Usuario, Prisma } from '@prisma/client';
+import { Usuario, Prisma, Desafio, Pesagem } from '@prisma/client';
 
 @Injectable()
 export class UsuarioService {
@@ -11,6 +11,32 @@ export class UsuarioService {
   ): Promise<Usuario | null> {
     return this.prisma.usuario.findUnique({
       where: usuarioWhereUniqueInput,
+    });
+  }
+
+  async desafiosByUserId(userId: number): Promise<Desafio[]> {
+    return this.prisma.desafio.findMany({
+      where: {
+        idUsuario: userId,
+      },
+    });
+  }
+
+  async pesagensByChallengeId(challengeId: number): Promise<Pesagem[]> {
+    return this.prisma.pesagem.findMany({
+      where: {
+        idDesafio: challengeId,
+      },
+    });
+  }
+
+  async pesagensByUserId(userId: number): Promise<Pesagem[]> {
+    return this.prisma.pesagem.findMany({
+      where: {
+        desafio: {
+          idUsuario: userId,
+        },
+      },
     });
   }
 

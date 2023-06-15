@@ -7,8 +7,9 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { DesafioService } from './desafio.service';
+import { DesafioService } from '../Services/desafio.service';
 import { Desafio as DesafioModel } from '@prisma/client';
+import { parseISO } from 'date-fns';
 
 @Controller()
 export class DesafioController {
@@ -28,8 +29,8 @@ export class DesafioController {
   async createDesafio(
     @Body()
     desafioData: {
-      dataInicio: Date;
-      dataFinal: Date;
+      dataInicio: string;
+      dataFinal: string;
       titulo: string;
       descricao: string;
       meta: number;
@@ -38,9 +39,16 @@ export class DesafioController {
   ): Promise<DesafioModel> {
     const { dataInicio, dataFinal, titulo, descricao, meta, idUsuario } =
       desafioData;
+
+    // Converter a string para DateTime
+    const dataInicioParsed = parseISO(dataInicio);
+
+    // Converter a string para DateTime
+    const dataFinalParsed = parseISO(dataFinal);
+
     return this.desafioService.createDesafio({
-      dataInicio,
-      dataFinal,
+      dataInicio: dataInicioParsed,
+      dataFinal: dataFinalParsed,
       titulo,
       descricao,
       meta,
@@ -48,5 +56,10 @@ export class DesafioController {
         connect: { id: idUsuario },
       },
     });
+  }
+
+  @Delete('deletarDesafio/:id')
+  async deleteChallenge(@Param('id') id: string): Promise<DesafioModel> {
+    return this.desafioService.deleteDesafio({ id: Number(id) });
   }
 }

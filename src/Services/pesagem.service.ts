@@ -6,7 +6,7 @@ import { Pesagem, Prisma } from '@prisma/client';
 export class PesagemService {
   constructor(private prisma: PrismaService) {}
 
-  async post(
+  async pesagem(
     pesagemWhereUniqueInput: Prisma.PesagemWhereUniqueInput,
   ): Promise<Pesagem | null> {
     return this.prisma.pesagem.findUnique({
@@ -14,7 +14,7 @@ export class PesagemService {
     });
   }
 
-  async posts(params: {
+  async pesagens(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.PesagemWhereUniqueInput;
