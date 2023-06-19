@@ -1,6 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Desafio, Prisma } from '@prisma/client';
+import { Desafio, Prisma, Usuario, Pesagem } from '@prisma/client';
+
+export interface DesafioCompleto {
+  id: number;
+  dataInicio: BigInt;
+  dataFinal: BigInt;
+  titulo: string;
+  descricao: string;
+  usuario: Usuario;
+  pesagens: Pesagem[];
+}
 
 @Injectable()
 export class DesafioService {
@@ -51,6 +61,66 @@ export class DesafioService {
   async deleteDesafio(where: Prisma.DesafioWhereUniqueInput): Promise<Desafio> {
     return this.prisma.desafio.delete({
       where,
+    });
+  }
+
+  async desafiosByUserId(userId: number): Promise<Desafio[]> {
+    return this.prisma.desafio.findMany({
+      where: {
+        idUsuario: userId,
+      },
+    });
+  }
+
+  async desafioCompleto(
+    challengeId: Prisma.DesafioWhereUniqueInput,
+  ): Promise<DesafioCompleto> {
+    return new Promise((resolve, reject) => {
+      this.prisma.desafio
+        .findUnique({
+          where: challengeId,
+        })
+        .then((desafio) => {
+          this.prisma.usuario
+            .findUnique({
+              where: { id: desafio.idUsuario },
+            })
+            .then((usuario) => {
+              this.prisma.pesagem
+                .findMany({
+                  where: { idDesafio: desafio.id },
+                })
+                .then((pesagens) => {
+                  resolve({
+                    ...desafio,
+                    usuario: { ...usuario },
+                    pesagens: [...pesagens],
+                  });
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  async desafiosByDate(date: number): Promise<Desafio[]> {
+    return this.prisma.desafio.findMany({
+      where: {
+        dataInicio: {
+          lte: date,
+        },
+        dataFinal: {
+          gte: date,
+        },
+      },
     });
   }
 }

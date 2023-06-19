@@ -9,15 +9,19 @@ import {
 } from '@nestjs/common';
 import { DesafioService } from '../Services/desafio.service';
 import { Desafio as DesafioModel } from '@prisma/client';
-import { parseISO } from 'date-fns';
+import { DesafioCompleto } from '../Services/desafio.service';
 
 @Controller()
 export class DesafioController {
   constructor(private readonly desafioService: DesafioService) {}
 
   @Get('desafio/:id')
-  async getDesafioById(@Param('id') id: string): Promise<DesafioModel> {
-    return this.desafioService.desafio({ id: Number(id) });
+  async getDesafioById(@Param('id') id: string): Promise<DesafioCompleto> {
+    return this.desafioService
+      .desafioCompleto({ id: Number(id) })
+      .then((desafio) => {
+        return desafio;
+      });
   }
 
   @Get('desafios')
@@ -29,8 +33,8 @@ export class DesafioController {
   async createDesafio(
     @Body()
     desafioData: {
-      dataInicio: string;
-      dataFinal: string;
+      dataInicio: number;
+      dataFinal: number;
       titulo: string;
       descricao: string;
       meta: number;
@@ -40,15 +44,9 @@ export class DesafioController {
     const { dataInicio, dataFinal, titulo, descricao, meta, idUsuario } =
       desafioData;
 
-    // Converter a string para DateTime
-    const dataInicioParsed = parseISO(dataInicio);
-
-    // Converter a string para DateTime
-    const dataFinalParsed = parseISO(dataFinal);
-
     return this.desafioService.createDesafio({
-      dataInicio: dataInicioParsed,
-      dataFinal: dataFinalParsed,
+      dataInicio,
+      dataFinal,
       titulo,
       descricao,
       meta,
@@ -61,5 +59,17 @@ export class DesafioController {
   @Delete('deletarDesafio/:id')
   async deleteChallenge(@Param('id') id: string): Promise<DesafioModel> {
     return this.desafioService.deleteDesafio({ id: Number(id) });
+  }
+
+  @Get('/desafios/usuario/:id')
+  async getDesafiosByUserId(@Param('id') id: string): Promise<DesafioModel[]> {
+    return this.desafioService.desafiosByUserId(Number(id));
+  }
+
+  @Get('desafios/data/:data')
+  async getDesafiosByDate(
+    @Param('data') data: number,
+  ): Promise<DesafioModel[]> {
+    return this.desafioService.desafiosByDate(Number(data));
   }
 }

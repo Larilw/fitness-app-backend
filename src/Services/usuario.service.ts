@@ -14,32 +14,6 @@ export class UsuarioService {
     });
   }
 
-  async desafiosByUserId(userId: number): Promise<Desafio[]> {
-    return this.prisma.desafio.findMany({
-      where: {
-        idUsuario: userId,
-      },
-    });
-  }
-
-  async pesagensByChallengeId(challengeId: number): Promise<Pesagem[]> {
-    return this.prisma.pesagem.findMany({
-      where: {
-        idDesafio: challengeId,
-      },
-    });
-  }
-
-  async pesagensByUserId(userId: number): Promise<Pesagem[]> {
-    return this.prisma.pesagem.findMany({
-      where: {
-        desafio: {
-          idUsuario: userId,
-        },
-      },
-    });
-  }
-
   async usuarios(params: {
     skip?: number;
     take?: number;

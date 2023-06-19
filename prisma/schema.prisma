@@ -15,15 +15,15 @@ model Usuario {
     idFirebase Int
     desafios Desafio[]
     genero String
-    dataNascimento DateTime
+    dataNascimento BigInt
     pesoInicial Decimal
     altura Int 
 }
 
 model Desafio {
   id Int @id @default(autoincrement())
-  dataInicio DateTime
-  dataFinal DateTime
+  dataInicio BigInt
+  dataFinal BigInt
   titulo String
   descricao String
   meta Decimal
@@ -34,7 +34,7 @@ model Desafio {
 
 model Pesagem {
   id Int @id @default(autoincrement())
-  dataPesagem DateTime @default(now())
+  dataPesagem BigInt
   peso Decimal
   idDesafio Int
   desafio Desafio @relation(fields: [idDesafio], references: [id])

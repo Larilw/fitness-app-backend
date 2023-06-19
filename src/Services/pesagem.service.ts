@@ -53,4 +53,22 @@ export class PesagemService {
       where,
     });
   }
+
+  async pesagensByChallengeId(challengeId: number): Promise<Pesagem[]> {
+    return this.prisma.pesagem.findMany({
+      where: {
+        idDesafio: challengeId,
+      },
+    });
+  }
+
+  async pesagensByUserId(userId: number): Promise<Pesagem[]> {
+    return this.prisma.pesagem.findMany({
+      where: {
+        desafio: {
+          idUsuario: userId,
+        },
+      },
+    });
+  }
 }

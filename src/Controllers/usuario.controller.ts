@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { UsuarioService } from '../Services/usuario.service';
 import { Desafio, Pesagem, Usuario as UsuarioModel } from '@prisma/client';
-import { parseISO } from 'date-fns';
 
 @Controller()
 export class UsuarioController {
@@ -21,7 +20,7 @@ export class UsuarioController {
     userData: {
       idFirebase: number;
       genero: string;
-      dataNascimento: string;
+      dataNascimento: number;
       pesoInicial: number;
       altura: number;
     },
@@ -29,12 +28,10 @@ export class UsuarioController {
     const { idFirebase, genero, dataNascimento, pesoInicial, altura } =
       userData;
 
-    // Converter a string para DateTime
-    const dataNascimentoParsed = parseISO(dataNascimento);
     return this.usuarioService.createUsuario({
       idFirebase,
       genero,
-      dataNascimento: dataNascimentoParsed,
+      dataNascimento,
       pesoInicial,
       altura,
     });
@@ -48,16 +45,6 @@ export class UsuarioController {
   @Get('usuario/:id')
   async getUsuarioById(@Param('id') id: string): Promise<UsuarioModel> {
     return this.usuarioService.usuario({ id: Number(id) });
-  }
-
-  @Get('usuario/:id/desafios')
-  async getDesafiosByUserId(@Param('id') id: string): Promise<Desafio[]> {
-    return this.usuarioService.desafiosByUserId(Number(id));
-  }
-
-  @Get('usuario/:id/pesagens')
-  async getPesagensByUserId(@Param('id') id: string): Promise<Pesagem[]> {
-    return this.usuarioService.pesagensByUserId(Number(id));
   }
 
   @Delete('deletarUsuario/:id')

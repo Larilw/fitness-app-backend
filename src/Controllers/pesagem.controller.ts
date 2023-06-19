@@ -8,12 +8,15 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PesagemService } from '../Services/pesagem.service';
+import { DesafioService } from 'src/Services/desafio.service';
 import { Pesagem as PesagemModel } from '@prisma/client';
-import { parseISO } from 'date-fns';
 
 @Controller()
 export class PesagemController {
-  constructor(private readonly pesagemService: PesagemService) {}
+  constructor(
+    private readonly pesagemService: PesagemService,
+    private readonly desafioService: DesafioService,
+  ) {}
 
   @Get('pesagem/:id')
   async getPesagemById(@Param('id') id: string): Promise<PesagemModel> {
@@ -29,27 +32,47 @@ export class PesagemController {
   async createPesagem(
     @Body()
     pesagemData: {
-      dataPesagem: string;
+      dataPesagem: number;
       peso: number;
-      idDesafio: number;
     },
-  ): Promise<PesagemModel> {
-    const { dataPesagem, peso, idDesafio } = pesagemData;
+  ): Promise<PesagemModel[]> {
+    const { dataPesagem, peso } = pesagemData;
+    return this.desafioService
+      .desafiosByDate(dataPesagem)
+      .then((desafiosValidos) => {
+        let idsDesafiosValidos = desafiosValidos.map((desafio) => desafio.id);
+        let promises = [];
 
-    // Converter a string para DateTime
-    const dataPesagemParsed = parseISO(dataPesagem);
-
-    return this.pesagemService.createPesagem({
-      dataPesagem: dataPesagemParsed,
-      peso,
-      desafio: {
-        connect: { id: idDesafio },
-      },
-    });
+        idsDesafiosValidos.forEach((id) => {
+          promises.push(
+            this.pesagemService
+              .createPesagem({
+                dataPesagem,
+                peso,
+                desafio: {
+                  connect: { id: id },
+                },
+              })
+              .then((pesagem) => pesagem)
+              .catch((error) => error),
+          );
+        });
+        return Promise.all(promises)
+          .then((pesagens) => {
+            console.log('Funcionou');
+            return pesagens;
+          })
+          .catch((error) => error);
+      });
   }
 
   @Delete('deletarPesagem/:id')
   async deleteWeight(@Param('id') id: string): Promise<PesagemModel> {
     return this.pesagemService.deletePesagem({ id: Number(id) });
+  }
+
+  @Get('pesagens/usuario/:id')
+  async getPesagensByUserId(@Param('id') id: string): Promise<PesagemModel[]> {
+    return this.pesagemService.pesagensByUserId(Number(id));
   }
 }
