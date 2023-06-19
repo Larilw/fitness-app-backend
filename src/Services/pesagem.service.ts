@@ -32,6 +32,7 @@ export class PesagemService {
   }
 
   async createPesagem(data: Prisma.PesagemCreateInput): Promise<Pesagem> {
+    data.dataPesagem = new Date(Number(data.dataPesagem)).getTime();
     return this.prisma.pesagem.create({
       data,
     });

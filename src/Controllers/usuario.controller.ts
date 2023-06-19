@@ -20,7 +20,7 @@ export class UsuarioController {
     userData: {
       idFirebase: number;
       genero: string;
-      dataNascimento: number;
+      dataNascimento: string;
       pesoInicial: number;
       altura: number;
     },
@@ -31,7 +31,7 @@ export class UsuarioController {
     return this.usuarioService.createUsuario({
       idFirebase,
       genero,
-      dataNascimento,
+      dataNascimento: new Date(dataNascimento).getTime(),
       pesoInicial,
       altura,
     });

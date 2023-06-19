@@ -33,8 +33,8 @@ export class DesafioController {
   async createDesafio(
     @Body()
     desafioData: {
-      dataInicio: number;
-      dataFinal: number;
+      dataInicio: string;
+      dataFinal: string;
       titulo: string;
       descricao: string;
       meta: number;
@@ -45,8 +45,8 @@ export class DesafioController {
       desafioData;
 
     return this.desafioService.createDesafio({
-      dataInicio,
-      dataFinal,
+      dataInicio: new Date(dataInicio).getTime(),
+      dataFinal: new Date(dataFinal).getTime(),
       titulo,
       descricao,
       meta,
@@ -68,8 +68,8 @@ export class DesafioController {
 
   @Get('desafios/data/:data')
   async getDesafiosByDate(
-    @Param('data') data: number,
+    @Param('data') data: string,
   ): Promise<DesafioModel[]> {
-    return this.desafioService.desafiosByDate(Number(data));
+    return this.desafioService.desafiosByDate(new Date(data).getTime());
   }
 }

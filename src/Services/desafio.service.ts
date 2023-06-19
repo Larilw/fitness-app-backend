@@ -42,6 +42,8 @@ export class DesafioService {
   }
 
   async createDesafio(data: Prisma.DesafioCreateInput): Promise<Desafio> {
+    data.dataFinal = new Date(Number(data.dataFinal)).getTime();
+    data.dataInicio = new Date(Number(data.dataInicio)).getTime();
     return this.prisma.desafio.create({
       data,
     });

@@ -32,6 +32,8 @@ export class UsuarioService {
   }
 
   async createUsuario(data: Prisma.UsuarioCreateInput): Promise<Usuario> {
+    data.dataNascimento = new Date(Number(data.dataNascimento)).getTime();
+
     return this.prisma.usuario.create({
       data,
     });

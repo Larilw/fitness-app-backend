@@ -32,13 +32,13 @@ export class PesagemController {
   async createPesagem(
     @Body()
     pesagemData: {
-      dataPesagem: number;
+      dataPesagem: string;
       peso: number;
     },
   ): Promise<PesagemModel[]> {
     const { dataPesagem, peso } = pesagemData;
     return this.desafioService
-      .desafiosByDate(dataPesagem)
+      .desafiosByDate(new Date(dataPesagem).getTime())
       .then((desafiosValidos) => {
         let idsDesafiosValidos = desafiosValidos.map((desafio) => desafio.id);
         let promises = [];
@@ -47,7 +47,7 @@ export class PesagemController {
           promises.push(
             this.pesagemService
               .createPesagem({
-                dataPesagem,
+                dataPesagem: new Date(dataPesagem).getTime(),
                 peso,
                 desafio: {
                   connect: { id: id },
