@@ -47,6 +47,11 @@ export class UsuarioController {
     return this.usuarioService.usuario({ id: Number(id) });
   }
 
+  @Get('usuarioLogin/:id')
+  async getUsuarioByLoginId(@Param('id') id: string): Promise<UsuarioModel> {
+    return this.usuarioService.usuarioLogin(Number(id));
+  }
+
   @Delete('deletarUsuario/:id')
   async deleteUser(@Param('id') id: string): Promise<UsuarioModel> {
     return this.usuarioService.deleteUsuario({ id: Number(id) });

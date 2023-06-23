@@ -114,6 +114,7 @@ export class DesafioService {
   }
 
   async desafiosByDate(date: number): Promise<Desafio[]> {
+    
     return this.prisma.desafio.findMany({
       where: {
         dataInicio: {

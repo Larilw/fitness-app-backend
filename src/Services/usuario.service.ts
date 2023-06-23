@@ -14,6 +14,14 @@ export class UsuarioService {
     });
   }
 
+  async usuarioLogin(userLoginId: number): Promise<Usuario | null> {
+    return this.prisma.usuario.findFirst({
+      where: {
+        idFirebase: userLoginId,
+      },
+    });
+  }
+
   async usuarios(params: {
     skip?: number;
     take?: number;
