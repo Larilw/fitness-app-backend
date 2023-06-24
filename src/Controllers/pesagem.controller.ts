@@ -28,19 +28,24 @@ export class PesagemController {
     return this.pesagemService.pesagens({});
   }
 
-  @Post('criarPesagem')
+  @Post('criarPesagem/:id')
   async createPesagem(
     @Body()
     pesagemData: {
       dataPesagem: string;
       peso: number;
     },
+    @Param('id') id: string,
   ): Promise<PesagemModel[]> {
     const { dataPesagem, peso } = pesagemData;
     return this.desafioService
       .desafiosByDate(new Date(dataPesagem).getTime())
       .then((desafiosValidos) => {
-        let idsDesafiosValidos = desafiosValidos.map((desafio) => desafio.id);
+        let idsDesafiosValidos: number[] = [];
+        desafiosValidos.forEach((desafio) => {
+          if (desafio.idUsuario == Number(id))
+            idsDesafiosValidos.push(desafio.id);
+        });
         let promises = [];
 
         idsDesafiosValidos.forEach((id) => {
@@ -54,7 +59,9 @@ export class PesagemController {
                 },
               })
               .then((pesagem) => pesagem)
-              .catch((error) => error),
+              .catch((error) => {
+                console.log(error);
+              }),
           );
         });
         return Promise.all(promises)

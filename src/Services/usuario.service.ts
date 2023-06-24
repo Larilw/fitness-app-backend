@@ -14,7 +14,7 @@ export class UsuarioService {
     });
   }
 
-  async usuarioLogin(userLoginId: number): Promise<Usuario | null> {
+  async usuarioAuth(userLoginId: number): Promise<Usuario | null> {
     return this.prisma.usuario.findFirst({
       where: {
         idFirebase: userLoginId,
