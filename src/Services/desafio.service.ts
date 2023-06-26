@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { Desafio, Prisma, Usuario, Pesagem } from '@prisma/client';
+import { PesagemService } from './pesagem.service';
 
 export interface DesafioCompleto {
   id: number;
@@ -14,7 +15,10 @@ export interface DesafioCompleto {
 
 @Injectable()
 export class DesafioService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private pesagemService: PesagemService,
+  ) {}
 
   async desafio(
     desafioWhereUniqueInput: Prisma.DesafioWhereUniqueInput,
@@ -60,9 +64,12 @@ export class DesafioService {
     });
   }
 
-  async deleteDesafio(where: Prisma.DesafioWhereUniqueInput): Promise<Desafio> {
+  async deleteDesafio(challengeId: number): Promise<Desafio> {
+    await this.pesagemService.deletePesagens(challengeId);
     return this.prisma.desafio.delete({
-      where,
+      where: {
+        id: challengeId,
+      },
     });
   }
 
@@ -114,7 +121,6 @@ export class DesafioService {
   }
 
   async desafiosByDate(date: number): Promise<Desafio[]> {
-    
     return this.prisma.desafio.findMany({
       where: {
         dataInicio: {

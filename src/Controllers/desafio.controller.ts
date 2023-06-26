@@ -58,7 +58,7 @@ export class DesafioController {
 
   @Delete('deletarDesafio/:id')
   async deleteChallenge(@Param('id') id: string): Promise<DesafioModel> {
-    return this.desafioService.deleteDesafio({ id: Number(id) });
+    return this.desafioService.deleteDesafio(Number(id));
   }
 
   @Get('/desafios/usuario/:id')

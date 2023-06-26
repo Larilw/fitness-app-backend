@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { PesagemService } from '../Services/pesagem.service';
 import { DesafioService } from 'src/Services/desafio.service';
-import { Pesagem as PesagemModel } from '@prisma/client';
+import { Pesagem as PesagemModel, Prisma } from '@prisma/client';
 
 @Controller()
 export class PesagemController {
@@ -81,5 +81,19 @@ export class PesagemController {
   @Get('pesagens/usuario/:id')
   async getPesagensByUserId(@Param('id') id: string): Promise<PesagemModel[]> {
     return this.pesagemService.pesagensByUserId(Number(id));
+  }
+
+  @Get('pesagens/desafio/:id')
+  async getPesagensByChallengeId(
+    @Param('id') id: string,
+  ): Promise<PesagemModel[]> {
+    return this.pesagemService.pesagensByChallengeId(Number(id));
+  }
+
+  @Delete('deletarPesagens/desafio/:id')
+  async deletePesagensByChallengeId(
+    @Param('id') id: string,
+  ): Promise<Prisma.BatchPayload> {
+    return this.pesagemService.deletePesagens(Number(id));
   }
 }

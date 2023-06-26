@@ -72,4 +72,12 @@ export class PesagemService {
       },
     });
   }
+
+  async deletePesagens(challengeId: number): Promise<Prisma.BatchPayload> {
+    return this.prisma.pesagem.deleteMany({
+      where: {
+        idDesafio: challengeId,
+      },
+    });
+  }
 }

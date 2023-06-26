@@ -20,7 +20,7 @@ export class UsuarioController {
     userData: {
       idFirebase: number;
       genero: string;
-      dataNascimento: string;
+      dataNascimento: number;
       pesoInicial: number;
       altura: number;
     },
