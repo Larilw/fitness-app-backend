@@ -22,6 +22,26 @@ export class UsuarioService {
     });
   }
 
+  async usuarioEmail(userEmail: string): Promise<Usuario | null> {
+    return this.prisma.usuario.findFirst({
+      where: {
+        email: userEmail,
+      },
+    });
+  }
+
+  async login(
+    userEmail: string,
+    userPassword: string,
+  ): Promise<Usuario | null> {
+    return this.prisma.usuario.findFirst({
+      where: {
+        email: userEmail,
+        senha: userPassword,
+      },
+    });
+  }
+
   async usuarios(params: {
     skip?: number;
     take?: number;

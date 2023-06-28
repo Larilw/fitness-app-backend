@@ -18,6 +18,9 @@ model Usuario {
     dataNascimento BigInt
     pesoInicial Decimal
     altura Int 
+    nome String
+    email String
+    senha String
 }
 
 model Desafio {

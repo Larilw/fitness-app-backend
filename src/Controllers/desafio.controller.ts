@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DesafioService } from '../Services/desafio.service';
-import { Desafio as DesafioModel } from '@prisma/client';
+import { Desafio as DesafioModel, Prisma } from '@prisma/client';
 import { DesafioCompleto } from '../Services/desafio.service';
 
 @Controller()
@@ -71,5 +71,12 @@ export class DesafioController {
     @Param('data') data: string,
   ): Promise<DesafioModel[]> {
     return this.desafioService.desafiosByDate(new Date(data).getTime());
+  }
+
+  @Delete('deletarDesafios/usuario/:id')
+  async deleteDesafiosByUserId(
+    @Param('id') id: string,
+  ): Promise<Prisma.BatchPayload> {
+    return this.desafioService.deleteDesafios(Number(id));
   }
 }

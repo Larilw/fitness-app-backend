@@ -132,4 +132,12 @@ export class DesafioService {
       },
     });
   }
+
+  async deleteDesafios(userId: number): Promise<Prisma.BatchPayload> {
+    return this.prisma.desafio.deleteMany({
+      where: {
+        idUsuario: userId,
+      },
+    });
+  }
 }
